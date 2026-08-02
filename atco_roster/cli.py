@@ -5,7 +5,12 @@ import json
 from pathlib import Path
 
 from .evaluate import evaluate_greedy
-from .export import export_assignments_csv, export_report_json, export_roster_matrix_csv
+from .export import (
+    export_assignments_csv,
+    export_report_json,
+    export_roster_matrix_csv,
+    export_roster_matrix_xlsx,
+)
 from .greedy import generate_greedy_roster
 from .rl_train import train_maskable_ppo
 from .rl_env import ATCRosteringEnv
@@ -76,11 +81,13 @@ def main() -> None:
         output_dir = Path(args.output_dir)
         export_assignments_csv(output_dir / "generated_roster.csv", scenario, assignments)
         export_roster_matrix_csv(output_dir / "generated_roster_matrix.csv", scenario, assignments)
+        export_roster_matrix_xlsx(output_dir / "generated_roster_matrix.xlsx", scenario, assignments)
         export_report_json(output_dir / "validation_report.json", report)
         print(f"Filled {report.filled_slots}/{report.total_slots} slots")
         print(f"Hard violations: {len(report.hard_violations)}")
         print(f"Wrote {output_dir / 'generated_roster.csv'}")
         print(f"Wrote {output_dir / 'generated_roster_matrix.csv'}")
+        print(f"Wrote {output_dir / 'generated_roster_matrix.xlsx'}")
         print(f"Wrote {output_dir / 'validation_report.json'}")
         return
 

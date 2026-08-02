@@ -17,6 +17,9 @@ roster is independently validated.
 - `atco_roster/`: current cleaned implementation.
 - `docs/`: reconstructed requirements, attempt review, and research framing.
 
+Start with `PROJECT_OVERVIEW.md` for a simple explanation of the goal, inputs,
+outputs, current plan, and limitations.
+
 See `docs/RUN_LOG.md` for verified commands and current limitations.
 
 ## Quick Start
@@ -33,8 +36,8 @@ Generate a 10-day hard-valid baseline roster:
 python3 -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --sick-rate 0.1
 ```
 
-This writes both slot-level assignments (`generated_roster.csv`) and a
-first-level duty matrix (`generated_roster_matrix.csv`).
+This writes slot-level assignments (`generated_roster.csv`) and first-level
+duty matrices (`generated_roster_matrix.csv` and `generated_roster_matrix.xlsx`).
 
 Use the sample 24-controller-per-shift demand mentioned in the project notes:
 

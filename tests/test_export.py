@@ -1,8 +1,9 @@
 import csv
 from pathlib import Path
 import tempfile
+from zipfile import ZipFile
 
-from atco_roster.export import export_roster_matrix_csv
+from atco_roster.export import export_roster_matrix_csv, export_roster_matrix_xlsx
 from atco_roster.models import Assignment, Controller, Scenario, build_slots
 
 
@@ -37,6 +38,29 @@ class ExportTests:
         assert rows[1]["D02"] == "L"
         assert rows[1]["D03"] == "N"
 
+    def test_roster_matrix_xlsx_contains_openxml_parts(self):
+        controllers = (Controller("1", "Controller", ("RSR",)),)
+        scenario = Scenario(
+            controllers=controllers,
+            slots=build_slots(1, {"M": {"RSR": 1}}),
+            role_names=("RSR",),
+            max_controllers=1,
+        )
+        assignments = [Assignment(0, "M", "RSR", 1, "1")]
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "matrix.xlsx"
+            export_roster_matrix_xlsx(path, scenario, assignments)
+            with ZipFile(path) as workbook:
+                names = set(workbook.namelist())
+                worksheet = workbook.read("xl/worksheets/sheet1.xml").decode("utf-8")
+
+        assert "[Content_Types].xml" in names
+        assert "xl/workbook.xml" in names
+        assert "xl/worksheets/sheet1.xml" in names
+        assert "Controller" in worksheet
+        assert "M" in worksheet
+
 
 try:
     import unittest
@@ -51,3 +75,7 @@ if unittest is not None:
 
 def test_roster_matrix_uses_shift_leave_night_off_and_off_codes():
     ExportTests().test_roster_matrix_uses_shift_leave_night_off_and_off_codes()
+
+
+def test_roster_matrix_xlsx_contains_openxml_parts():
+    ExportTests().test_roster_matrix_xlsx_contains_openxml_parts()

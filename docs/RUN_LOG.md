@@ -4,30 +4,43 @@
 
 Environment:
 
-- Python system environment has no `numpy`.
-- Optional RL dependencies were installed in local `.venv/`.
+- All verification below was run through local `.venv/`.
+- Optional RL dependencies are installed in `.venv/` from `requirements-atco.txt`.
 
 Verified commands:
 
 ```bash
-python3 -m unittest discover -s tests
+.venv/bin/python -m unittest discover -s tests
 ```
 
 Result:
 
-- 4 tests passed.
+- 6 tests passed.
 
 ```bash
-python3 -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --demand-profile aai_sample --sick-rate 0.1
+.venv/bin/python -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --sick-rate 0.1
 ```
 
 Result:
 
-- 648/720 slots filled.
+- 190/190 slots filled.
 - 0 hard violations.
+- wrote `generated_roster.csv`, `generated_roster_matrix.csv`,
+  `generated_roster_matrix.xlsx`, and `validation_report.json`.
 
 ```bash
-python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 5 --demand-profile aai_sample --sick-rate 0.0 --sick-rate 0.1 --seeds 2
+.venv/bin/python -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 5 --demand-profile aai_sample --sick-rate 0.1
+```
+
+Result:
+
+- 321/360 slots filled.
+- 0 hard violations.
+- wrote `generated_roster.csv`, `generated_roster_matrix.csv`,
+  `generated_roster_matrix.xlsx`, and `validation_report.json`.
+
+```bash
+.venv/bin/python -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 5 --demand-profile aai_sample --sick-rate 0.0 --sick-rate 0.1 --seeds 2
 ```
 
 Result:
@@ -44,10 +57,13 @@ Result:
 - 38/38 slots filled.
 - 0 hard violations.
 - `rl_validation_report.json` reported `is_valid: true`.
+- wrote `rl_generated_roster.csv`, `rl_generated_roster_matrix.csv`,
+  `rl_generated_roster_matrix.xlsx`, `rl_validation_report.json`, and a model zip.
 
 Current limitations:
 
 - RL has only been smoke-tested, not trained long enough for research-quality results.
 - AAI sample demand is a reconstructed profile from notes, not an officially signed-off station demand matrix.
 - The first-level roster is implemented; second-level intra-shift channel rotation is documented but not solved yet.
-- The generated first-level roster matrix is CSV, not yet an `.xlsx` workbook styled exactly like the historical file.
+- The generated first-level roster matrix is now available as CSV and `.xlsx`;
+  the `.xlsx` is functional but not yet styled exactly like the historical workbook.
