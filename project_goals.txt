@@ -1,0 +1,135 @@
+Message 1 -
+Here’s a concise summary of the ATC scheduling requirements and constraints based on the inputs provided:
+
+### General Schedule:
+- **Shifts**: Morning, Afternoon, Night, Night-off, Clear-off (rest day).
+- **Weekly Cycle**: 5 days on, 2 days off; shift cycle follows sequence (e.g., morning → afternoon → night → night-off → clear-off).
+- **Teams**: 5 teams (A, B, C, D, E) working on a rotating cycle, with balanced distribution of rated controllers across teams.
+
+### Controller Attributes:
+- **Ratings**: Seven different levels (e.g., non-rated, trainee).
+- **Medical** and **English Language Proficiency**: Validity based on start and end dates.
+- **Leave Applications**: Currently approved manually; track status (approved, pending).
+
+### Staffing Requirements:
+- **Stations**: Vary in the minimum required controllers per shift, often using a 3/2 multiplier (e.g., 3 assigned for 2 required).
+- **Shift Requirements**: Minimum manpower varies by station and shift.
+
+### Duty and Rest Constraints:
+- **Continuous Work**: Max 12 hours per shift.
+- **Weekly Limit**: 48 hours.
+- **Monthly Limit**: 90 hours over 30 days.
+- **Continuous Days**: Max 6 days on duty; requires a 48-hour break afterward.
+- **Night Shifts**: Require 48-hour break after night duty; 56 hours if two consecutive night shifts.
+- **Morning Shift**: Requires 12-hour gap following completion.
+
+### Shift Allocation:
+- **Shift In-Charge**: Assigns controllers to specific positions, ensuring:
+  - No more than 2 hours on a single channel (typically 1.5 hours followed by 45-minute break).
+  - Proper ratings and currency for each position.
+  - Proficiency requirement: work 10 hours within the last 6 months over any 6-day period.
+
+### Roster Requirements:
+- **Roster Cycle**: Planned bi-weekly (fortnightly) and published at least 5 days in advance.
+
+### Rewards:
+- **Desirable**: Equal distribution of work hours, adherence to 5-day cycle.
+- **Non-desirable**: Extra hours, failure to ensure required breaks after night duty, consecutive night shifts.
+
+
+Message 2 - 
+ATC:
+
+5 days a week
+morn, aft, night, nightoff, clearoff
+
+Rating - non-rated, trainee etc etc around 7 ratings (each are individual)
+
+medical - conducted date, end date
+
+English language profi - conducted date, end date
+
+Leave applications - right now is manually approved, pending 
+
+ATCOs are divided into teams - 	
+usually 5 teams because 5 days: A,B,C,D - cycle varies based on shift - morning on one day, night on other etc
+equal rated people are equally distributed into these teams: not randomly assigned - need to consider inputs
+
+minimum manpower for each shift - depending on each station : there might be multiple stations that require a  certain rating:
+					standard formula 2/3 (suppose 2 radar controllers are required, 3 will be taken - so multiply 3/2 with required)
+					but some stations require diff manpowers at different shifts - so minimum various even in diff shifts at each station
+
+
+adjusting controllers duties - (when u do this some controllers might 
+				no controller can work more than 12 continuous
+				max time per week - 48		
+				30 days - 90 hours
+				cant have 6 continuous days of duty - after this need 48 hours of free
+				if a controller is on night duty - needs 48 hr break
+				morning duty - need 12 hr gap after his initial morning duty ends
+				worst case if 2 nights in a row - 56 hours break
+
+sequence - morning, next day afternoon, night, nightoff, clearoff then again morning
+
+6, 6.5,11.5
+
+
+shift in charge - allocates the controllers to positions:
+
+each controller can sit on a particular channel for not more than 2 hours (usually keep 1.5 hours then 45 mins break: 2/3 rule works)
+rating requirements and instructor for rating also needs to be accounted here
+recency, currency
+
+yearly once - proficiency test
+in any 6 days need to work for 10 hours in the past 6 months
+
+
+currently - fornight rosters
+needs to give roster 5 days before
+
+Rewards: 
+desirable - equal hours for all controllers
+non-desirable - extra hours allocated, 5 days cycle must hold, 48 hour break after night, cant have 2 nights in a row
+
+Message 3:
+Dear Students,
+Please find sample rosters for 10+ months.
+The legend used is below.
+Check if your Algos generate this first level roster.
+The ratings for 1 controller denotes he generally has the lower level ratings too.
+
+To see the number of positions, filter by shift, say A.  You will  see there are 4 RSR ATCOs, 2 ASR ATCos, 6 Tower ATCOs, 6Planning guys, 6 Asst Guys/.
+24ATCos in total in the shift
+
+M - Morning 
+A - Afternoon
+N - Night
+NO - Night Off
+O - Clear Off
+G - General
+L - Leave
+COFF - Compensatory OFF
+CH - Closed Holiday
+EL - Earned Leave
+RH - Restricted Holiday
+CL - Casual Leave
+MED - Medical Leave
+--------------------
+The Ratings Abbreviations used in the above information furnished are as follows
+
+1) RSR = Area Control Surveillance 
+2) ASR = Approach Control Surveillance
+3) ACC = Area Control Procedural
+4) ADC = Aerodrome Control
+5) FDP = Flight Data Processing
+
+Assumption is that a  controller 
+with RSR will have RSR, ASR, ACC, ADC, FDP 
+and ASR will have ASR, ACC, ADC, FDP
+and ACC will have ACC, ADC, FDP
+and ADC will have ADC, FDP
+and FDP will have only FDP
+Additionally T -Training/Tour
+P - Planning
+A- Assistant
+------------
