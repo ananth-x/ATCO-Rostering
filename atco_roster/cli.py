@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .export import export_assignments_csv, export_report_json
 from .greedy import generate_greedy_roster
+from .rl_train import train_maskable_ppo
 from .rl_env import ATCRosteringEnv
 from .scenarios import scenario_from_workbook
 from .validation import validate_assignments
@@ -26,6 +27,15 @@ def main() -> None:
     generate.add_argument("--days", type=int, default=10)
     generate.add_argument("--sick-rate", type=float, default=0.0)
     generate.add_argument("--output-dir", default="outputs/atco_roster")
+
+    train = subparsers.add_parser("train-rl")
+    train.add_argument("workbook")
+    train.add_argument("--days", type=int, default=10)
+    train.add_argument("--timesteps", type=int, default=60000)
+    train.add_argument("--sick-rate", type=float, default=0.0)
+    train.add_argument("--max-controllers", type=int)
+    train.add_argument("--seed", type=int, default=42)
+    train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
 
     args = parser.parse_args()
     if args.command == "analyze-workbook":
@@ -49,6 +59,19 @@ def main() -> None:
         print(f"Hard violations: {len(report.hard_violations)}")
         print(f"Wrote {output_dir / 'generated_roster.csv'}")
         print(f"Wrote {output_dir / 'validation_report.json'}")
+        return
+
+    if args.command == "train-rl":
+        train_maskable_ppo(
+            args.workbook,
+            days=args.days,
+            total_timesteps=args.timesteps,
+            output_dir=args.output_dir,
+            sick_rate=args.sick_rate,
+            max_controllers=args.max_controllers,
+            seed=args.seed,
+        )
+        print(f"Wrote RL artifacts to {args.output_dir}")
 
 
 if __name__ == "__main__":

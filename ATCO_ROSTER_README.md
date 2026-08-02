@@ -33,3 +33,12 @@ python3 -m pip install -r requirements-atco.txt
 
 Use `ATCRosteringEnv` with `sb3_contrib.MaskablePPO` and the environment's
 `action_masks()` method. Do not replace hard masks with reward penalties.
+
+Train a first RL model:
+
+```bash
+python3 -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 10 --timesteps 60000 --sick-rate 0.1
+```
+
+The trained model, generated roster, and independent validation report are
+written to `outputs/atco_roster/rl_run/`.

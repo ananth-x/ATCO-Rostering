@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+from .export import export_assignments_csv, export_report_json
+from .rl_env import ATCRosteringEnv
+from .scenarios import scenario_from_workbook
+from .validation import validate_assignments
+
+
+def train_maskable_ppo(
+    workbook_path: str,
+    days: int,
+    total_timesteps: int,
+    output_dir: str | Path,
+    sick_rate: float = 0.0,
+    max_controllers: int | None = None,
+    seed: int = 42,
+) -> None:
+    try:
+        from sb3_contrib import MaskablePPO
+        from sb3_contrib.common.wrappers import ActionMasker
+    except ModuleNotFoundError as exc:
+        raise SystemExit(
+            "Missing RL dependencies. Install them with: "
+            "python3 -m pip install -r requirements-atco.txt"
+        ) from exc
+
+    scenario = scenario_from_workbook(
+        workbook_path,
+        days=days,
+        max_controllers=max_controllers,
+        sick_rate=sick_rate,
+        random_seed=seed,
+    )
+    base_env = ATCRosteringEnv(scenario)
+    env = ActionMasker(base_env, lambda wrapped_env: wrapped_env.valid_action_mask())
+
+    model = MaskablePPO(
+        "MlpPolicy",
+        env,
+        gamma=0.95,
+        learning_rate=1e-3,
+        n_steps=1024,
+        batch_size=128,
+        ent_coef=0.01,
+        seed=seed,
+        verbose=1,
+    )
+    model.learn(total_timesteps=total_timesteps)
+
+    obs, _ = env.reset(seed=seed)
+    done = False
+    while not done:
+        action, _ = model.predict(obs, action_masks=env.action_masks(), deterministic=True)
+        obs, _, done, _, _ = env.step(action)
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    model.save(output_dir / "maskable_ppo_atco")
+    assignments = list(base_env.assignments)
+    report = validate_assignments(scenario, assignments)
+    export_assignments_csv(output_dir / "rl_generated_roster.csv", scenario, assignments)
+    export_report_json(output_dir / "rl_validation_report.json", report)
