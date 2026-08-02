@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .evaluate import evaluate_greedy
 from .export import export_assignments_csv, export_report_json
 from .greedy import generate_greedy_roster
 from .rl_train import train_maskable_ppo
@@ -36,6 +37,13 @@ def main() -> None:
     train.add_argument("--max-controllers", type=int)
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
+
+    evaluate = subparsers.add_parser("evaluate-greedy")
+    evaluate.add_argument("workbook")
+    evaluate.add_argument("--days", type=int, default=10)
+    evaluate.add_argument("--sick-rate", action="append", type=float, default=[])
+    evaluate.add_argument("--seeds", type=int, default=10)
+    evaluate.add_argument("--output-dir", default="outputs/atco_roster/experiments")
 
     args = parser.parse_args()
     if args.command == "analyze-workbook":
@@ -72,6 +80,23 @@ def main() -> None:
             seed=args.seed,
         )
         print(f"Wrote RL artifacts to {args.output_dir}")
+        return
+
+    if args.command == "evaluate-greedy":
+        sick_rates = args.sick_rate or [0.0, 0.1, 0.2, 0.3]
+        rows = evaluate_greedy(
+            args.workbook,
+            days=args.days,
+            sick_rates=sick_rates,
+            seeds=list(range(args.seeds)),
+            output_dir=args.output_dir,
+        )
+        valid_runs = sum(1 for row in rows if row["is_valid"])
+        avg_coverage = sum(float(row["coverage"]) for row in rows) / max(1, len(rows))
+        print(f"Runs: {len(rows)}")
+        print(f"Valid runs: {valid_runs}/{len(rows)}")
+        print(f"Average coverage: {avg_coverage:.3f}")
+        print(f"Wrote metrics to {args.output_dir}")
 
 
 if __name__ == "__main__":

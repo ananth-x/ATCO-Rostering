@@ -42,3 +42,9 @@ Train the first MaskablePPO model:
 ```bash
 python3 -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 10 --timesteps 60000 --sick-rate 0.1
 ```
+
+Run the deterministic baseline experiment grid:
+
+```bash
+python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10
+```

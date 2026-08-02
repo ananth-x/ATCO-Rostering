@@ -59,6 +59,12 @@ Initial reproducible grid:
 - random seeds: at least 10 per setting;
 - compare greedy baseline versus trained MaskablePPO.
 
+Current implemented baseline command:
+
+```bash
+python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10
+```
+
 ## Publication Notes
 
 The workbook contains operational and personal data. Before publication:
