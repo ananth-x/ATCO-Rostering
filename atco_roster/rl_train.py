@@ -24,6 +24,7 @@ def train_maskable_ppo(
     demand_by_shift_role: dict[str, dict[str, int]] | None = None,
     n_steps: int = 1024,
     seed: int = 42,
+    verbose: int = 0,
 ) -> None:
     scenario = scenario_from_workbook(
         workbook_path,
@@ -39,6 +40,7 @@ def train_maskable_ppo(
         output_dir=output_dir,
         n_steps=n_steps,
         seed=seed,
+        verbose=verbose,
     )
 
 
@@ -48,6 +50,7 @@ def train_maskable_ppo_for_scenario(
     output_dir: str | Path,
     n_steps: int = 1024,
     seed: int = 42,
+    verbose: int = 0,
 ) -> None:
     try:
         from sb3_contrib import MaskablePPO
@@ -70,7 +73,7 @@ def train_maskable_ppo_for_scenario(
         batch_size=min(128, n_steps),
         ent_coef=0.01,
         seed=seed,
-        verbose=1,
+        verbose=verbose,
     )
     model.learn(total_timesteps=total_timesteps)
 

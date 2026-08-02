@@ -104,6 +104,8 @@ These are safety rules. The system must not violate them.
 - Do not assign a controller to a role they are not qualified for.
 - Do not assign a controller if their role currency is expired.
 - Maintain at least 12 hours rest between shifts.
+- After night duty, keep the controller off for the configured recovery days.
+  The default assumption is `N -> NO -> O`.
 - Do not exceed the configured maximum consecutive work days.
 - Do not assign the same controller twice on one day in the first-level roster.
 

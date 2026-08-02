@@ -45,6 +45,7 @@ def scenario_from_workbook(
         slots=slots,
         role_names=role_names,
         max_controllers=max(max_controllers or 0, len(controllers)),
+        night_recovery_days=2,
     )
 
 
@@ -66,6 +67,7 @@ def scenario_from_config(config_path: str | Path) -> Scenario:
         min_rest_hours=float(constraints.get("min_rest_hours", 12.0)),
         max_consecutive_days=int(constraints.get("max_consecutive_days", 4)),
         currency_threshold_days=int(constraints.get("currency_threshold_days", 50)),
+        night_recovery_days=int(constraints.get("night_recovery_days", 2)),
     )
 
 

@@ -70,6 +70,7 @@ def validate_assignments(
         )
         previous_end = None
         previous_day = None
+        previous_night_days: list[int] = []
         streak = 0
         days_seen = set()
         for assignment in ordered:
@@ -82,6 +83,11 @@ def validate_assignments(
                     f"{controller_id} has only {slot.start_hour - previous_end:.1f}h rest before day "
                     f"{assignment.day} {assignment.shift}"
                 )
+            for night_day in previous_night_days:
+                if 0 < assignment.day - night_day <= scenario.night_recovery_days:
+                    hard_violations.append(
+                        f"{controller_id} assigned on day {assignment.day} during night recovery"
+                    )
             if previous_day == assignment.day - 1:
                 streak += 1
             else:
@@ -92,6 +98,8 @@ def validate_assignments(
                 )
             previous_day = assignment.day
             previous_end = slot.end_hour
+            if assignment.shift == "N":
+                previous_night_days.append(assignment.day)
 
     total_slots = len(scenario.slots)
     filled_slots = sum(1 for item in assignments if item.controller_id is not None)

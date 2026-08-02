@@ -24,6 +24,7 @@ class ScenarioTests:
                 "min_rest_hours": 10,
                 "max_consecutive_days": 3,
                 "currency_threshold_days": 40,
+                "night_recovery_days": 1,
             },
             "controllers": [
                 {
@@ -48,6 +49,7 @@ class ScenarioTests:
         assert scenario.min_rest_hours == 10
         assert scenario.max_consecutive_days == 3
         assert scenario.currency_threshold_days == 40
+        assert scenario.night_recovery_days == 1
 
 
 try:

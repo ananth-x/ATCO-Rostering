@@ -50,6 +50,7 @@ def main() -> None:
     train.add_argument("--demand-json")
     train.add_argument("--n-steps", type=int, default=1024)
     train.add_argument("--seed", type=int, default=42)
+    train.add_argument("--verbose", type=int, default=0)
     train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
 
     train_config = subparsers.add_parser("train-rl-config")
@@ -57,6 +58,7 @@ def main() -> None:
     train_config.add_argument("--timesteps", type=int, default=60000)
     train_config.add_argument("--n-steps", type=int, default=1024)
     train_config.add_argument("--seed", type=int, default=42)
+    train_config.add_argument("--verbose", type=int, default=0)
     train_config.add_argument("--output-dir", default="outputs/atco_roster/rl_config_run")
 
     evaluate = subparsers.add_parser("evaluate-greedy")
@@ -110,6 +112,7 @@ def main() -> None:
             demand_by_shift_role=demand,
             n_steps=args.n_steps,
             seed=args.seed,
+            verbose=args.verbose,
         )
         print(f"Wrote RL artifacts to {args.output_dir}")
         return
@@ -122,6 +125,7 @@ def main() -> None:
             output_dir=args.output_dir,
             n_steps=args.n_steps,
             seed=args.seed,
+            verbose=args.verbose,
         )
         print(f"Wrote RL artifacts to {args.output_dir}")
         return

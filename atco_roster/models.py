@@ -73,6 +73,7 @@ class Scenario:
     min_rest_hours: float = 12.0
     max_consecutive_days: int = 4
     currency_threshold_days: int = 50
+    night_recovery_days: int = 2
 
 
 def normalize_code(value: object) -> str:

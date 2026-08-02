@@ -8,7 +8,8 @@
   "constraints": {
     "min_rest_hours": 12,
     "max_consecutive_days": 4,
-    "currency_threshold_days": 50
+    "currency_threshold_days": 50,
+    "night_recovery_days": 2
   },
   "controllers": [
     {"id": "C001", "name": "Controller 001", "rating": "RSR"},
@@ -22,6 +23,13 @@
     {"id": "C009", "name": "Controller 009", "rating": "ASR"},
     {"id": "C010", "name": "Controller 010", "qualifications": ["P", "A"]},
     {"id": "C011", "name": "Controller 011", "rating": "RSR"},
-    {"id": "C012", "name": "Controller 012", "qualifications": ["A"]}
+    {"id": "C012", "name": "Controller 012", "qualifications": ["A"]},
+    {"id": "C013", "name": "Controller 013", "rating": "RSR"},
+    {"id": "C014", "name": "Controller 014", "rating": "ASR"},
+    {"id": "C015", "name": "Controller 015", "qualifications": ["P"]},
+    {"id": "C016", "name": "Controller 016", "qualifications": ["A"]},
+    {"id": "C017", "name": "Controller 017", "rating": "RSR"},
+    {"id": "C018", "name": "Controller 018", "qualifications": ["P", "A"]},
+    {"id": "C019", "name": "Controller 019", "qualifications": ["A"]}
   ]
 }

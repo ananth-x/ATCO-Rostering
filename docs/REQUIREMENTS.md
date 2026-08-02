@@ -45,6 +45,9 @@ These must be enforced by action masks and verified independently:
 - Do not assign a controller to a role they are not qualified for.
 - Do not assign a controller whose role currency has expired.
 - Enforce at least 12 hours of rest between assigned shifts.
+- Enforce configured recovery days after night duty. The default assumption is
+  `N -> NO -> O`, so a controller who works night cannot be assigned for the
+  next two calendar days.
 - Do not work more than the configured consecutive-day limit.
 - Do not assign the same controller twice on one calendar day in the first-level roster.
 

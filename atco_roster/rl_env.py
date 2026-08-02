@@ -58,12 +58,18 @@ class ATCRosteringEnv(BaseEnv):
         }
         self.role_index = {role: idx for idx, role in enumerate(scenario.role_names)}
         self.max_roles = max(1, len(scenario.role_names))
+        self.features_per_controller = 8
 
         self.action_space = (
             spaces.Discrete(scenario.max_controllers + 1) if spaces is not None else None
         )
         self.observation_space = (
-            spaces.Box(low=0.0, high=1.0, shape=(3 + scenario.max_controllers * 7,), dtype=np.float32)
+            spaces.Box(
+                low=0.0,
+                high=1.0,
+                shape=(3 + scenario.max_controllers * self.features_per_controller,),
+                dtype=np.float32,
+            )
             if spaces is not None
             else None
         )
@@ -78,6 +84,7 @@ class ATCRosteringEnv(BaseEnv):
         self.assignments: list[Assignment] = []
         self.last_end = [-9999.0] * len(self.controllers)
         self.last_day = [-9999] * len(self.controllers)
+        self.last_night_day = [-9999] * len(self.controllers)
         self.consecutive_days = [0] * len(self.controllers)
         self.total_hours = [0.0] * len(self.controllers)
         self.days_since_role = [
@@ -107,6 +114,8 @@ class ATCRosteringEnv(BaseEnv):
             if controller.controller_id in already_assigned_today:
                 continue
             if slot.day in controller.unavailable_days:
+                continue
+            if 0 < slot.day - self.last_night_day[idx] <= self.scenario.night_recovery_days:
                 continue
             if slot.role not in controller.qualifications:
                 continue
@@ -142,6 +151,8 @@ class ATCRosteringEnv(BaseEnv):
             elif self.last_day[action] != slot.day:
                 self.consecutive_days[action] = 1
             self.last_day[action] = slot.day
+            if slot.shift == "N":
+                self.last_night_day[action] = slot.day
             self.last_end[action] = slot.end_hour
             self.total_hours[action] += slot.duration_hours
             self.days_since_role[action][slot.role] = 0
@@ -185,12 +196,17 @@ class ATCRosteringEnv(BaseEnv):
         ]
         for idx in range(self.scenario.max_controllers):
             if idx >= len(self.controllers):
-                obs.extend([0.0] * 7)
+                obs.extend([0.0] * self.features_per_controller)
                 continue
             controller = self.controllers[idx]
             rest = min(72.0, max(0.0, slot.start_hour - self.last_end[idx])) / 72.0
             qualified = 1.0 if slot.role in controller.qualifications else 0.0
             absent = 1.0 if slot.day in controller.unavailable_days else 0.0
+            night_recovery = (
+                1.0
+                if 0 < slot.day - self.last_night_day[idx] <= self.scenario.night_recovery_days
+                else 0.0
+            )
             currency = min(
                 self.scenario.currency_threshold_days,
                 self.days_since_role[idx][slot.role],
@@ -201,5 +217,7 @@ class ATCRosteringEnv(BaseEnv):
                 assignment.day == slot.day and assignment.controller_id == controller.controller_id
                 for assignment in self.assignments
             )
-            obs.extend([rest, qualified, absent, currency, consecutive, hours, float(already_today)])
+            obs.extend(
+                [rest, qualified, absent, night_recovery, currency, consecutive, hours, float(already_today)]
+            )
         return np.array(obs, dtype=np.float32)
