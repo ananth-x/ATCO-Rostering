@@ -68,3 +68,9 @@ Generate from an anonymized JSON scenario:
 ```bash
 python3 -m atco_roster.cli generate-config examples/scenario_config.json
 ```
+
+Compare greedy and RL on the same anonymized scenario:
+
+```bash
+python3 -m atco_roster.cli evaluate-config examples/scenario_config.json --seeds 2 --rl-timesteps 10000 --n-steps 256
+```

@@ -65,6 +65,15 @@ Current implemented baseline command:
 python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10 --demand-profile aai_sample
 ```
 
+Current implemented config comparison command:
+
+```bash
+python3 -m atco_roster.cli evaluate-config examples/scenario_config.json --seeds 2 --rl-timesteps 10000 --n-steps 256
+```
+
+This writes `config_metrics.csv` and `config_metrics.json` with paired greedy
+and `rl_maskable_ppo` rows for the same scenario and seed list.
+
 ## Publication Notes
 
 The workbook contains operational and personal data. Before publication:

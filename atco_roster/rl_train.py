@@ -11,7 +11,7 @@ from .export import (
 from .rl_env import ATCRosteringEnv
 from .models import Scenario
 from .scenarios import scenario_from_workbook
-from .validation import validate_assignments
+from .validation import ValidationReport, validate_assignments
 
 
 def train_maskable_ppo(
@@ -25,7 +25,7 @@ def train_maskable_ppo(
     n_steps: int = 1024,
     seed: int = 42,
     verbose: int = 0,
-) -> None:
+) -> ValidationReport:
     scenario = scenario_from_workbook(
         workbook_path,
         days=days,
@@ -34,7 +34,7 @@ def train_maskable_ppo(
         sick_rate=sick_rate,
         random_seed=seed,
     )
-    train_maskable_ppo_for_scenario(
+    return train_maskable_ppo_for_scenario(
         scenario,
         total_timesteps=total_timesteps,
         output_dir=output_dir,
@@ -51,7 +51,7 @@ def train_maskable_ppo_for_scenario(
     n_steps: int = 1024,
     seed: int = 42,
     verbose: int = 0,
-) -> None:
+) -> ValidationReport:
     try:
         from sb3_contrib import MaskablePPO
         from sb3_contrib.common.wrappers import ActionMasker
@@ -92,3 +92,4 @@ def train_maskable_ppo_for_scenario(
     export_roster_matrix_csv(output_dir / "rl_generated_roster_matrix.csv", scenario, assignments)
     export_roster_matrix_xlsx(output_dir / "rl_generated_roster_matrix.xlsx", scenario, assignments)
     export_report_json(output_dir / "rl_validation_report.json", report)
+    return report

@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .evaluate import evaluate_greedy
+from .evaluate import evaluate_config, evaluate_greedy
 from .export import (
     export_assignments_csv,
     export_report_json,
@@ -69,6 +69,17 @@ def main() -> None:
     evaluate.add_argument("--demand-profile", default="conservative")
     evaluate.add_argument("--demand-json")
     evaluate.add_argument("--output-dir", default="outputs/atco_roster/experiments")
+
+    evaluate_config_parser = subparsers.add_parser("evaluate-config")
+    evaluate_config_parser.add_argument("config")
+    evaluate_config_parser.add_argument("--seeds", type=int, default=3)
+    evaluate_config_parser.add_argument("--rl-timesteps", type=int, default=10000)
+    evaluate_config_parser.add_argument("--n-steps", type=int, default=256)
+    evaluate_config_parser.add_argument("--skip-rl", action="store_true")
+    evaluate_config_parser.add_argument(
+        "--output-dir",
+        default="outputs/atco_roster/config_experiments",
+    )
 
     args = parser.parse_args()
     if args.command == "analyze-workbook":
@@ -146,6 +157,27 @@ def main() -> None:
         print(f"Runs: {len(rows)}")
         print(f"Valid runs: {valid_runs}/{len(rows)}")
         print(f"Average coverage: {avg_coverage:.3f}")
+        print(f"Wrote metrics to {args.output_dir}")
+        return
+
+    if args.command == "evaluate-config":
+        rows = evaluate_config(
+            args.config,
+            seeds=list(range(args.seeds)),
+            output_dir=args.output_dir,
+            rl_timesteps=args.rl_timesteps,
+            n_steps=args.n_steps,
+            include_rl=not args.skip_rl,
+        )
+        print(f"Rows: {len(rows)}")
+        for method in sorted({str(row["method"]) for row in rows}):
+            method_rows = [row for row in rows if row["method"] == method]
+            valid_runs = sum(1 for row in method_rows if row["is_valid"])
+            avg_coverage = sum(float(row["coverage"]) for row in method_rows) / max(
+                1,
+                len(method_rows),
+            )
+            print(f"{method}: valid {valid_runs}/{len(method_rows)}, average coverage {avg_coverage:.3f}")
         print(f"Wrote metrics to {args.output_dir}")
 
 

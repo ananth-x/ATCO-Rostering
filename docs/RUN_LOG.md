@@ -15,7 +15,7 @@ Verified commands:
 
 Result:
 
-- 9 tests passed.
+- 10 tests passed.
 
 ```bash
 .venv/bin/python -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --sick-rate 0.1
@@ -99,11 +99,22 @@ Result:
 - 0 hard violations.
 - `rl_validation_report.json` reported `is_valid: true`.
 
+```bash
+.venv/bin/python -m atco_roster.cli evaluate-config examples/scenario_config.json --seeds 2 --rl-timesteps 10000 --n-steps 256 --output-dir outputs/atco_roster/config_eval_rl_check
+```
+
+Result:
+
+- wrote `config_metrics.csv` and `config_metrics.json`.
+- greedy: 2/2 runs hard-valid, average coverage 1.000.
+- `rl_maskable_ppo`: 2/2 runs hard-valid, average coverage 1.000.
+
 Current limitations:
 
-- RL can now generate a valid roster for the checked JSON scenario, but broader
-  research-quality evaluation still needs repeated seeds, multiple scenarios,
-  absenteeism stress tests, and comparison against baselines.
+- RL can now generate a valid roster and a greedy-vs-RL metrics table for the
+  checked JSON scenario, but broader research-quality evaluation still needs
+  more seeds, multiple scenarios, absenteeism stress tests, and an exact
+  optimization baseline.
 - AAI sample demand is a reconstructed profile from notes, not an officially signed-off station demand matrix.
 - The first-level roster is implemented; second-level intra-shift channel rotation is documented but not solved yet.
 - The generated first-level roster matrix is now available as CSV and `.xlsx`;

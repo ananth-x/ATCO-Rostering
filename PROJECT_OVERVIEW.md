@@ -198,6 +198,12 @@ Run a short RL smoke test from the JSON config:
 .venv/bin/python -m atco_roster.cli train-rl-config examples/scenario_config.json --timesteps 64 --n-steps 64
 ```
 
+Compare greedy and RL on the same anonymized config:
+
+```bash
+.venv/bin/python -m atco_roster.cli evaluate-config examples/scenario_config.json --seeds 2 --rl-timesteps 10000 --n-steps 256
+```
+
 ## GitHub Hygiene
 
 Tracked files should be source code, tests, documentation, original project
@@ -231,6 +237,6 @@ next step is to remove/anonymize it and rewrite git history.
 1. Confirm whether the workbook data can remain in GitHub.
 2. Confirm the exact station demand matrix to use.
 3. Extend the JSON config for medical and ELP expiry fields.
-4. Train RL across multiple seeds and compare against the greedy baseline.
+4. Extend greedy-vs-RL evaluation across more seeds and stress scenarios.
 5. Add a small exact-optimization baseline for research comparison.
 6. Improve Excel formatting to match the historical roster workbook.
