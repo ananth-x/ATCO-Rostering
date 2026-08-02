@@ -46,7 +46,7 @@ python3 -m pip install -r requirements-atco.txt
 Train the first MaskablePPO model:
 
 ```bash
-python3 -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 10 --timesteps 60000 --sick-rate 0.1
+python3 -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 10 --timesteps 60000 --sick-rate 0.1 --n-steps 1024
 ```
 
 Run the deterministic baseline experiment grid:

@@ -16,6 +16,7 @@ def train_maskable_ppo(
     sick_rate: float = 0.0,
     max_controllers: int | None = None,
     demand_by_shift_role: dict[str, dict[str, int]] | None = None,
+    n_steps: int = 1024,
     seed: int = 42,
 ) -> None:
     try:
@@ -43,8 +44,8 @@ def train_maskable_ppo(
         env,
         gamma=0.95,
         learning_rate=1e-3,
-        n_steps=1024,
-        batch_size=128,
+        n_steps=n_steps,
+        batch_size=min(128, n_steps),
         ent_coef=0.01,
         seed=seed,
         verbose=1,

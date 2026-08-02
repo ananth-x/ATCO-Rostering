@@ -39,6 +39,7 @@ def main() -> None:
     train.add_argument("--max-controllers", type=int)
     train.add_argument("--demand-profile", default="conservative")
     train.add_argument("--demand-json")
+    train.add_argument("--n-steps", type=int, default=1024)
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
 
@@ -91,6 +92,7 @@ def main() -> None:
             sick_rate=args.sick_rate,
             max_controllers=args.max_controllers,
             demand_by_shift_role=demand,
+            n_steps=args.n_steps,
             seed=args.seed,
         )
         print(f"Wrote RL artifacts to {args.output_dir}")
