@@ -17,6 +17,8 @@ roster is independently validated.
 - `atco_roster/`: current cleaned implementation.
 - `docs/`: reconstructed requirements, attempt review, and research framing.
 
+See `docs/RUN_LOG.md` for verified commands and current limitations.
+
 ## Quick Start
 
 Analyze the historical workbook:
