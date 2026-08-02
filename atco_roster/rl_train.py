@@ -9,6 +9,7 @@ from .export import (
     export_roster_matrix_xlsx,
 )
 from .rl_env import ATCRosteringEnv
+from .models import Scenario
 from .scenarios import scenario_from_workbook
 from .validation import validate_assignments
 
@@ -24,6 +25,30 @@ def train_maskable_ppo(
     n_steps: int = 1024,
     seed: int = 42,
 ) -> None:
+    scenario = scenario_from_workbook(
+        workbook_path,
+        days=days,
+        demand_by_shift_role=demand_by_shift_role,
+        max_controllers=max_controllers,
+        sick_rate=sick_rate,
+        random_seed=seed,
+    )
+    train_maskable_ppo_for_scenario(
+        scenario,
+        total_timesteps=total_timesteps,
+        output_dir=output_dir,
+        n_steps=n_steps,
+        seed=seed,
+    )
+
+
+def train_maskable_ppo_for_scenario(
+    scenario: Scenario,
+    total_timesteps: int,
+    output_dir: str | Path,
+    n_steps: int = 1024,
+    seed: int = 42,
+) -> None:
     try:
         from sb3_contrib import MaskablePPO
         from sb3_contrib.common.wrappers import ActionMasker
@@ -33,14 +58,6 @@ def train_maskable_ppo(
             "python3 -m pip install -r requirements-atco.txt"
         ) from exc
 
-    scenario = scenario_from_workbook(
-        workbook_path,
-        days=days,
-        demand_by_shift_role=demand_by_shift_role,
-        max_controllers=max_controllers,
-        sick_rate=sick_rate,
-        random_seed=seed,
-    )
     base_env = ATCRosteringEnv(scenario)
     env = ActionMasker(base_env, lambda wrapped_env: wrapped_env.valid_action_mask())
 

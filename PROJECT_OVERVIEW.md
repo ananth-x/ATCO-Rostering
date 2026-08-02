@@ -59,6 +59,28 @@ The current commands generate:
 For RL runs, the same outputs are prefixed with `rl_`, and the trained model is
 also saved.
 
+## Dynamic Scenario Config
+
+The workbook is useful for recovery, but a real or publishable experiment should
+not depend on editing the historical workbook. The repo now supports a JSON
+scenario file.
+
+Example:
+
+```bash
+.venv/bin/python -m atco_roster.cli generate-config examples/scenario_config.json
+```
+
+The config file can define:
+
+- planning horizon in days;
+- demand by shift and role;
+- hard constraint values;
+- anonymized controllers;
+- qualifications or rating;
+- unavailable days;
+- role currency counters.
+
 ## Duty Codes
 
 Important first-level duty codes:
@@ -156,10 +178,22 @@ Generate with the reconstructed AAI sample demand:
 .venv/bin/python -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --demand-profile aai_sample --sick-rate 0.1
 ```
 
+Generate from an anonymized JSON config:
+
+```bash
+.venv/bin/python -m atco_roster.cli generate-config examples/scenario_config.json
+```
+
 Run a short RL smoke test:
 
 ```bash
 .venv/bin/python -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 2 --timesteps 64 --n-steps 64 --sick-rate 0.1
+```
+
+Run a short RL smoke test from the JSON config:
+
+```bash
+.venv/bin/python -m atco_roster.cli train-rl-config examples/scenario_config.json --timesteps 64 --n-steps 64
 ```
 
 ## GitHub Hygiene
@@ -194,7 +228,7 @@ next step is to remove/anonymize it and rewrite git history.
 
 1. Confirm whether the workbook data can remain in GitHub.
 2. Confirm the exact station demand matrix to use.
-3. Add structured leave/medical/ELP input files.
+3. Extend the JSON config for medical and ELP expiry fields.
 4. Train RL across multiple seeds and compare against the greedy baseline.
 5. Add a small exact-optimization baseline for research comparison.
 6. Improve Excel formatting to match the historical roster workbook.

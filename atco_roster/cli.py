@@ -12,9 +12,9 @@ from .export import (
     export_roster_matrix_xlsx,
 )
 from .greedy import generate_greedy_roster
-from .rl_train import train_maskable_ppo
+from .rl_train import train_maskable_ppo, train_maskable_ppo_for_scenario
 from .rl_env import ATCRosteringEnv
-from .scenarios import demand_profile, scenario_from_workbook
+from .scenarios import demand_profile, scenario_from_config, scenario_from_workbook
 from .validation import validate_assignments
 from .workbook import summarize_duty_sheet
 
@@ -36,6 +36,10 @@ def main() -> None:
     generate.add_argument("--demand-json")
     generate.add_argument("--output-dir", default="outputs/atco_roster")
 
+    generate_config = subparsers.add_parser("generate-config")
+    generate_config.add_argument("config")
+    generate_config.add_argument("--output-dir", default="outputs/atco_roster/config_run")
+
     train = subparsers.add_parser("train-rl")
     train.add_argument("workbook")
     train.add_argument("--days", type=int, default=10)
@@ -47,6 +51,13 @@ def main() -> None:
     train.add_argument("--n-steps", type=int, default=1024)
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
+
+    train_config = subparsers.add_parser("train-rl-config")
+    train_config.add_argument("config")
+    train_config.add_argument("--timesteps", type=int, default=60000)
+    train_config.add_argument("--n-steps", type=int, default=1024)
+    train_config.add_argument("--seed", type=int, default=42)
+    train_config.add_argument("--output-dir", default="outputs/atco_roster/rl_config_run")
 
     evaluate = subparsers.add_parser("evaluate-greedy")
     evaluate.add_argument("workbook")
@@ -77,18 +88,14 @@ def main() -> None:
         )
         env = ATCRosteringEnv(scenario)
         assignments = generate_greedy_roster(env)
-        report = validate_assignments(scenario, assignments)
-        output_dir = Path(args.output_dir)
-        export_assignments_csv(output_dir / "generated_roster.csv", scenario, assignments)
-        export_roster_matrix_csv(output_dir / "generated_roster_matrix.csv", scenario, assignments)
-        export_roster_matrix_xlsx(output_dir / "generated_roster_matrix.xlsx", scenario, assignments)
-        export_report_json(output_dir / "validation_report.json", report)
-        print(f"Filled {report.filled_slots}/{report.total_slots} slots")
-        print(f"Hard violations: {len(report.hard_violations)}")
-        print(f"Wrote {output_dir / 'generated_roster.csv'}")
-        print(f"Wrote {output_dir / 'generated_roster_matrix.csv'}")
-        print(f"Wrote {output_dir / 'generated_roster_matrix.xlsx'}")
-        print(f"Wrote {output_dir / 'validation_report.json'}")
+        _write_generation_outputs(Path(args.output_dir), scenario, assignments, "")
+        return
+
+    if args.command == "generate-config":
+        scenario = scenario_from_config(args.config)
+        env = ATCRosteringEnv(scenario)
+        assignments = generate_greedy_roster(env)
+        _write_generation_outputs(Path(args.output_dir), scenario, assignments, "")
         return
 
     if args.command == "train-rl":
@@ -101,6 +108,18 @@ def main() -> None:
             sick_rate=args.sick_rate,
             max_controllers=args.max_controllers,
             demand_by_shift_role=demand,
+            n_steps=args.n_steps,
+            seed=args.seed,
+        )
+        print(f"Wrote RL artifacts to {args.output_dir}")
+        return
+
+    if args.command == "train-rl-config":
+        scenario = scenario_from_config(args.config)
+        train_maskable_ppo_for_scenario(
+            scenario,
+            total_timesteps=args.timesteps,
+            output_dir=args.output_dir,
             n_steps=args.n_steps,
             seed=args.seed,
         )
@@ -133,6 +152,26 @@ def _load_demand(profile: str, demand_json: str | None) -> dict[str, dict[str, i
             return json.loads(path.read_text(encoding="utf-8"))
         return json.loads(demand_json)
     return demand_profile(profile)
+
+
+def _write_generation_outputs(
+    output_dir: Path,
+    scenario,
+    assignments,
+    prefix: str,
+) -> None:
+    report = validate_assignments(scenario, assignments)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    export_assignments_csv(output_dir / f"{prefix}generated_roster.csv", scenario, assignments)
+    export_roster_matrix_csv(output_dir / f"{prefix}generated_roster_matrix.csv", scenario, assignments)
+    export_roster_matrix_xlsx(output_dir / f"{prefix}generated_roster_matrix.xlsx", scenario, assignments)
+    export_report_json(output_dir / f"{prefix}validation_report.json", report)
+    print(f"Filled {report.filled_slots}/{report.total_slots} slots")
+    print(f"Hard violations: {len(report.hard_violations)}")
+    print(f"Wrote {output_dir / f'{prefix}generated_roster.csv'}")
+    print(f"Wrote {output_dir / f'{prefix}generated_roster_matrix.csv'}")
+    print(f"Wrote {output_dir / f'{prefix}generated_roster_matrix.xlsx'}")
+    print(f"Wrote {output_dir / f'{prefix}validation_report.json'}")
 
 
 if __name__ == "__main__":

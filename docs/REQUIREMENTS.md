@@ -69,6 +69,28 @@ Custom demand JSON shape:
 }
 ```
 
+## Scenario Config
+
+For anonymized or future operational runs, use a scenario JSON file instead of
+editing the historical workbook.
+
+Minimal shape:
+
+```json
+{
+  "days": 3,
+  "demand": {
+    "M": {"RSR": 1, "P": 1},
+    "A": {"RSR": 1, "P": 1},
+    "N": {"RSR": 1, "P": 1}
+  },
+  "controllers": [
+    {"id": "C001", "name": "Controller 001", "rating": "RSR"},
+    {"id": "C002", "name": "Controller 002", "qualifications": ["P"], "unavailable_days": [1]}
+  ]
+}
+```
+
 ## Soft Constraints
 
 These should be optimized, not used to make an invalid roster valid:

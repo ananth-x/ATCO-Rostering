@@ -1,0 +1,27 @@
+{
+  "days": 3,
+  "demand": {
+    "M": {"RSR": 1, "ASR": 1, "P": 1, "A": 1},
+    "A": {"RSR": 1, "P": 1, "A": 1},
+    "N": {"RSR": 1, "P": 1, "A": 1}
+  },
+  "constraints": {
+    "min_rest_hours": 12,
+    "max_consecutive_days": 4,
+    "currency_threshold_days": 50
+  },
+  "controllers": [
+    {"id": "C001", "name": "Controller 001", "rating": "RSR"},
+    {"id": "C002", "name": "Controller 002", "rating": "RSR", "unavailable_days": [1]},
+    {"id": "C003", "name": "Controller 003", "rating": "ASR"},
+    {"id": "C004", "name": "Controller 004", "qualifications": ["P"]},
+    {"id": "C005", "name": "Controller 005", "qualifications": ["P"]},
+    {"id": "C006", "name": "Controller 006", "qualifications": ["A"]},
+    {"id": "C007", "name": "Controller 007", "qualifications": ["A"]},
+    {"id": "C008", "name": "Controller 008", "rating": "RSR"},
+    {"id": "C009", "name": "Controller 009", "rating": "ASR"},
+    {"id": "C010", "name": "Controller 010", "qualifications": ["P", "A"]},
+    {"id": "C011", "name": "Controller 011", "rating": "RSR"},
+    {"id": "C012", "name": "Controller 012", "qualifications": ["A"]}
+  ]
+}

@@ -60,6 +60,26 @@ Result:
 - wrote `rl_generated_roster.csv`, `rl_generated_roster_matrix.csv`,
   `rl_generated_roster_matrix.xlsx`, `rl_validation_report.json`, and a model zip.
 
+```bash
+.venv/bin/python -m atco_roster.cli generate-config examples/scenario_config.json
+```
+
+Result:
+
+- 30/30 slots filled.
+- 0 hard violations.
+- writes the same greedy roster output set without depending on the real workbook.
+
+```bash
+.venv/bin/python -m atco_roster.cli train-rl-config examples/scenario_config.json --timesteps 64 --n-steps 64
+```
+
+Result:
+
+- 27/30 slots filled after a short 64-step smoke run.
+- 0 hard violations.
+- writes the same RL output set without depending on the real workbook.
+
 Current limitations:
 
 - RL has only been smoke-tested, not trained long enough for research-quality results.
@@ -67,3 +87,5 @@ Current limitations:
 - The first-level roster is implemented; second-level intra-shift channel rotation is documented but not solved yet.
 - The generated first-level roster matrix is now available as CSV and `.xlsx`;
   the `.xlsx` is functional but not yet styled exactly like the historical workbook.
+- The JSON scenario config supports absences and currency counters, but medical
+  and ELP expiry fields still need first-class modeling.

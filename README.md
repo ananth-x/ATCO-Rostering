@@ -62,3 +62,9 @@ Run the deterministic baseline experiment grid:
 ```bash
 python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10 --demand-profile aai_sample
 ```
+
+Generate from an anonymized JSON scenario:
+
+```bash
+python3 -m atco_roster.cli generate-config examples/scenario_config.json
+```
