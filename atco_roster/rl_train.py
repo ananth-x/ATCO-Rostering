@@ -15,6 +15,7 @@ def train_maskable_ppo(
     output_dir: str | Path,
     sick_rate: float = 0.0,
     max_controllers: int | None = None,
+    demand_by_shift_role: dict[str, dict[str, int]] | None = None,
     seed: int = 42,
 ) -> None:
     try:
@@ -29,6 +30,7 @@ def train_maskable_ppo(
     scenario = scenario_from_workbook(
         workbook_path,
         days=days,
+        demand_by_shift_role=demand_by_shift_role,
         max_controllers=max_controllers,
         sick_rate=sick_rate,
         random_seed=seed,

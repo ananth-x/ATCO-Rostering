@@ -48,6 +48,27 @@ These must be enforced by action masks and verified independently:
 - Do not work more than the configured consecutive-day limit.
 - Do not assign the same controller twice on one calendar day in the first-level roster.
 
+## Demand Configuration
+
+Manpower is station-specific and must be input-driven. The code supports named
+demand profiles and JSON demand matrices.
+
+Implemented profiles:
+
+- `conservative`: small smoke-test demand for rapid development.
+- `aai_sample`: 24 controllers per operational shift, based on the project note
+  that describes 4 RSR, 2 ASR, 6 tower, 6 planning, and 6 assistant positions.
+
+Custom demand JSON shape:
+
+```json
+{
+  "M": {"RSR": 4, "ASR": 2, "ADC": 6, "P": 6, "A": 6},
+  "A": {"RSR": 4, "ASR": 2, "ADC": 6, "P": 6, "A": 6},
+  "N": {"RSR": 4, "ASR": 2, "ADC": 6, "P": 6, "A": 6}
+}
+```
+
 ## Soft Constraints
 
 These should be optimized, not used to make an invalid roster valid:

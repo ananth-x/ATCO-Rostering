@@ -14,6 +14,7 @@ from .validation import validate_assignments
 def evaluate_greedy(
     workbook_path: str,
     days: int,
+    demand_by_shift_role: dict[str, dict[str, int]],
     sick_rates: list[float],
     seeds: list[int],
     output_dir: str | Path,
@@ -24,6 +25,7 @@ def evaluate_greedy(
             scenario = scenario_from_workbook(
                 workbook_path,
                 days=days,
+                demand_by_shift_role=demand_by_shift_role,
                 sick_rate=sick_rate,
                 random_seed=seed,
             )

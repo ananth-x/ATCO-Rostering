@@ -62,7 +62,7 @@ Initial reproducible grid:
 Current implemented baseline command:
 
 ```bash
-python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10
+python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10 --demand-profile aai_sample
 ```
 
 ## Publication Notes

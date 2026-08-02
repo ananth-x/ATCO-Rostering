@@ -31,6 +31,12 @@ Generate a 10-day hard-valid baseline roster:
 python3 -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --sick-rate 0.1
 ```
 
+Use the sample 24-controller-per-shift demand mentioned in the project notes:
+
+```bash
+python3 -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --demand-profile aai_sample
+```
+
 Install optional RL dependencies:
 
 ```bash
@@ -46,5 +52,5 @@ python3 -m atco_roster.cli train-rl "2024 ROSTER FINAL.xlsx" --days 10 --timeste
 Run the deterministic baseline experiment grid:
 
 ```bash
-python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10
+python3 -m atco_roster.cli evaluate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --seeds 10 --demand-profile aai_sample
 ```

@@ -9,7 +9,7 @@ from .export import export_assignments_csv, export_report_json
 from .greedy import generate_greedy_roster
 from .rl_train import train_maskable_ppo
 from .rl_env import ATCRosteringEnv
-from .scenarios import scenario_from_workbook
+from .scenarios import demand_profile, scenario_from_workbook
 from .validation import validate_assignments
 from .workbook import summarize_duty_sheet
 
@@ -27,6 +27,8 @@ def main() -> None:
     generate.add_argument("workbook")
     generate.add_argument("--days", type=int, default=10)
     generate.add_argument("--sick-rate", type=float, default=0.0)
+    generate.add_argument("--demand-profile", default="conservative")
+    generate.add_argument("--demand-json")
     generate.add_argument("--output-dir", default="outputs/atco_roster")
 
     train = subparsers.add_parser("train-rl")
@@ -35,6 +37,8 @@ def main() -> None:
     train.add_argument("--timesteps", type=int, default=60000)
     train.add_argument("--sick-rate", type=float, default=0.0)
     train.add_argument("--max-controllers", type=int)
+    train.add_argument("--demand-profile", default="conservative")
+    train.add_argument("--demand-json")
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--output-dir", default="outputs/atco_roster/rl_run")
 
@@ -43,6 +47,8 @@ def main() -> None:
     evaluate.add_argument("--days", type=int, default=10)
     evaluate.add_argument("--sick-rate", action="append", type=float, default=[])
     evaluate.add_argument("--seeds", type=int, default=10)
+    evaluate.add_argument("--demand-profile", default="conservative")
+    evaluate.add_argument("--demand-json")
     evaluate.add_argument("--output-dir", default="outputs/atco_roster/experiments")
 
     args = parser.parse_args()
@@ -56,7 +62,13 @@ def main() -> None:
         return
 
     if args.command == "generate-greedy":
-        scenario = scenario_from_workbook(args.workbook, args.days, sick_rate=args.sick_rate)
+        demand = _load_demand(args.demand_profile, args.demand_json)
+        scenario = scenario_from_workbook(
+            args.workbook,
+            args.days,
+            demand_by_shift_role=demand,
+            sick_rate=args.sick_rate,
+        )
         env = ATCRosteringEnv(scenario)
         assignments = generate_greedy_roster(env)
         report = validate_assignments(scenario, assignments)
@@ -70,6 +82,7 @@ def main() -> None:
         return
 
     if args.command == "train-rl":
+        demand = _load_demand(args.demand_profile, args.demand_json)
         train_maskable_ppo(
             args.workbook,
             days=args.days,
@@ -77,16 +90,19 @@ def main() -> None:
             output_dir=args.output_dir,
             sick_rate=args.sick_rate,
             max_controllers=args.max_controllers,
+            demand_by_shift_role=demand,
             seed=args.seed,
         )
         print(f"Wrote RL artifacts to {args.output_dir}")
         return
 
     if args.command == "evaluate-greedy":
+        demand = _load_demand(args.demand_profile, args.demand_json)
         sick_rates = args.sick_rate or [0.0, 0.1, 0.2, 0.3]
         rows = evaluate_greedy(
             args.workbook,
             days=args.days,
+            demand_by_shift_role=demand,
             sick_rates=sick_rates,
             seeds=list(range(args.seeds)),
             output_dir=args.output_dir,
@@ -97,6 +113,15 @@ def main() -> None:
         print(f"Valid runs: {valid_runs}/{len(rows)}")
         print(f"Average coverage: {avg_coverage:.3f}")
         print(f"Wrote metrics to {args.output_dir}")
+
+
+def _load_demand(profile: str, demand_json: str | None) -> dict[str, dict[str, int]]:
+    if demand_json:
+        path = Path(demand_json)
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(demand_json)
+    return demand_profile(profile)
 
 
 if __name__ == "__main__":
