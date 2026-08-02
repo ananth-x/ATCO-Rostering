@@ -33,6 +33,9 @@ Generate a 10-day hard-valid baseline roster:
 python3 -m atco_roster.cli generate-greedy "2024 ROSTER FINAL.xlsx" --days 10 --sick-rate 0.1
 ```
 
+This writes both slot-level assignments (`generated_roster.csv`) and a
+first-level duty matrix (`generated_roster_matrix.csv`).
+
 Use the sample 24-controller-per-shift demand mentioned in the project notes:
 
 ```bash

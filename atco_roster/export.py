@@ -32,6 +32,40 @@ def export_assignments_csv(path: str | Path, scenario: Scenario, assignments: li
             )
 
 
+def export_roster_matrix_csv(path: str | Path, scenario: Scenario, assignments: list[Assignment]) -> None:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    days = sorted({slot.day for slot in scenario.slots})
+    assigned_shift_by_controller_day = {
+        (assignment.controller_id, assignment.day): assignment.shift
+        for assignment in assignments
+        if assignment.controller_id is not None
+    }
+
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        fieldnames = ["controller_id", "controller_name", "qualifications"] + [
+            f"D{day + 1:02d}" for day in days
+        ]
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for controller in scenario.controllers:
+            row = {
+                "controller_id": controller.controller_id,
+                "controller_name": controller.name,
+                "qualifications": "/".join(controller.qualifications),
+            }
+            previous_code = ""
+            for day in days:
+                code = assigned_shift_by_controller_day.get((controller.controller_id, day))
+                if day in controller.unavailable_days:
+                    code = "L"
+                elif code is None:
+                    code = "NO" if previous_code == "N" else "O"
+                row[f"D{day + 1:02d}"] = code
+                previous_code = code
+            writer.writerow(row)
+
+
 def export_report_json(path: str | Path, report: ValidationReport) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)

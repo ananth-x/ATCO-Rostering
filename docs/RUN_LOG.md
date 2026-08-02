@@ -50,4 +50,4 @@ Current limitations:
 - RL has only been smoke-tested, not trained long enough for research-quality results.
 - AAI sample demand is a reconstructed profile from notes, not an officially signed-off station demand matrix.
 - The first-level roster is implemented; second-level intra-shift channel rotation is documented but not solved yet.
-- Workbook output in the exact historical Excel layout has not been generated yet; current exports are CSV and JSON.
+- The generated first-level roster matrix is CSV, not yet an `.xlsx` workbook styled exactly like the historical file.

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .export import export_assignments_csv, export_report_json
+from .export import export_assignments_csv, export_report_json, export_roster_matrix_csv
 from .rl_env import ATCRosteringEnv
 from .scenarios import scenario_from_workbook
 from .validation import validate_assignments
@@ -64,4 +64,5 @@ def train_maskable_ppo(
     assignments = list(base_env.assignments)
     report = validate_assignments(scenario, assignments)
     export_assignments_csv(output_dir / "rl_generated_roster.csv", scenario, assignments)
+    export_roster_matrix_csv(output_dir / "rl_generated_roster_matrix.csv", scenario, assignments)
     export_report_json(output_dir / "rl_validation_report.json", report)
